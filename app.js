@@ -155,24 +155,31 @@ async function salvarEscola() {
     return;
   }
 
+  msg("msg-form", "Salvando...", "#888");
+
   var obj = {
     nome:        nome,
     qtdAlunos:   parseInt(document.getElementById("campo-alunos").value) || 0,
     internet:    document.getElementById("campo-internet").value === "true",
     laboratorio: document.getElementById("campo-lab").value === "true",
-    cep:         parseInt(document.getElementById("campo-cep").value.replace(/\D/g, "")) || 0,
+    cep: parseInt(document.getElementById("campo-cep").value.replace(/\D/g, "")) || 0,
     endereco:    document.getElementById("campo-endereco").value
   };
 
-  if (id) {
-    await b4aPut(id, obj);
-    msg("msg-form", "Escola atualizada!", "green");
-  } else {
-    await b4aPost(obj);
-    msg("msg-form", "Escola cadastrada!", "green");
+  try {
+    if (id) {
+      await b4aPut(id, obj);
+      msg("msg-form", "Escola atualizada!", "green");
+    } else {
+      await b4aPost(obj);
+      msg("msg-form", "Escola cadastrada!", "green");
+    }
+    limparForm();
+    carregar();
+  } catch (erro) {
+    msg("msg-form", "Erro ao salvar: " + erro.message, "red");
+    console.error(erro);
   }
-  limparForm();
-  carregar();
 }
 
 function limparForm() {
